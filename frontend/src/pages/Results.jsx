@@ -29,51 +29,53 @@ export default function Results() {
   const [activeTab, setActiveTab]= useState('agent1');
   const [error,     setError]    = useState('');
 
+  // NEW — ESLint satisfied:
   useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const res  = await getProject(projectId);
+        console.log("Results API response:", res.data);
+        const data = res.data.data;
+        setProject(data.project);
+
+        const rawOutputs = data.outputs || data.agent_outputs || [];
+        console.log("Raw outputs:", rawOutputs);
+
+        const outputMap = {};
+        rawOutputs.forEach(o => {
+          const name = (o.agent_name || '').toLowerCase();
+          const key  =
+            name.includes('inquirer')  ? 'agent1' :
+            name.includes('analyst')   ? 'agent2' :
+            name.includes('visionary') ? 'agent3' :
+            name.includes('navigator') ? 'agent4' :
+            name.includes('guardian')  ? 'agent5' :
+            name.includes('advisor')   ? 'agent6' : null;
+
+          if (key) {
+            const raw = o.output_data;
+            outputMap[key] = typeof raw === 'string'
+              ? (() => {
+                  try { return JSON.parse(raw); }
+                  catch { return {}; }
+                })()
+              : (raw || {});
+          }
+        });
+
+        console.log("Output map keys:", Object.keys(outputMap));
+        setOutputs(outputMap);
+
+      } catch (err) {
+        console.error("fetchResults error:", err);
+        setError('Failed to load results.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchResults();
   }, [projectId]);
-
-  const fetchResults = async () => {
-    try {
-      const res  = await getProject(projectId);
-      console.log("Results API response:", res.data); // debug
-      const data = res.data.data;
-      setProject(data.project);
-
-      // ✅ FIX — line 42: was 'data.agent_outputs', now 'data.outputs'
-      const rawOutputs = data.outputs || data.agent_outputs || [];
-      console.log("Raw outputs:", rawOutputs); // debug
-
-      const outputMap = {};
-      rawOutputs.forEach(o => {
-        const name = (o.agent_name || '').toLowerCase();
-        const key  =
-          name.includes('inquirer')  ? 'agent1' :
-          name.includes('analyst')   ? 'agent2' :
-          name.includes('visionary') ? 'agent3' :
-          name.includes('navigator') ? 'agent4' :
-          name.includes('guardian')  ? 'agent5' :
-          name.includes('advisor')   ? 'agent6' : null;
-
-        if (key) {
-          // Handle both string and object output_data safely
-          const raw = o.output_data;
-          outputMap[key] = typeof raw === 'string'
-            ? (() => { try { return JSON.parse(raw); } catch { return {}; } })()
-            : (raw || {});
-        }
-      });
-
-      console.log("Output map keys:", Object.keys(outputMap)); // debug
-      setOutputs(outputMap);
-
-    } catch (err) {
-      console.error("fetchResults error:", err); // debug
-      setError('Failed to load results.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const tabs = [
     { id: 'agent1', label: '🔍 Inquirer'  },

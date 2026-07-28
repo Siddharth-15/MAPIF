@@ -2,11 +2,6 @@
 
 import React, { useState } from 'react';
 
-const levelColor = {
-  High:   '#EA4335',
-  Medium: '#FDBD00',
-  Low:    '#2DA94F',
-};
 
 const impactColor = {
   High:   { bg: 'rgba(234,67,53,0.1)',   text: '#EA4335' },
