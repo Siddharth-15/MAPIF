@@ -1,0 +1,36 @@
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment files — NEVER push to GitHub
+.env
+backend/.env
+frontend/.env
+frontend/.env.development
+frontend/.env.production
+frontend/.env.local
+frontend/.env.production.local
+frontend/.env.development.local
+*.env
+
+# SQLite local database
+*.db
+*.sqlite3
+
+# Node modules and build
+frontend/node_modules/
+frontend/build/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Test files
+backend/test_supabase.py
+backend/check_db.py
