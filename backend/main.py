@@ -2,26 +2,35 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(
+    0,
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import auth, projects, agents
 
-app = FastAPI(title="AgentIQ API")
+app = FastAPI(title="MAPIF API")
 
-# ✅ Add your Vercel URL here after deployment
+# ✅ Explicitly list all allowed origins
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://*.vercel.app",          # all vercel preview URLs
-    os.getenv("FRONTEND_URL", ""),   # set this in Render env vars
+    "https://mapif.vercel.app",
+    "https://mapif-git-main-vsg4.vercel.app",
+    "https://mapif-ktx0ensgp-vsg4.vercel.app",
 ]
+
+# Also add from environment variable for flexibility
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url and frontend_url not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append(frontend_url)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins     = ALLOWED_ORIGINS,
     allow_credentials = True,
-    allow_methods     = ["*"],
+    allow_methods     = ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers     = ["*"],
 )
 
@@ -32,6 +41,6 @@ app.include_router(agents.router,   prefix="/api/agents")
 @app.get("/")
 def root():
     return {
-        "message": "AgentIQ API is running.",
+        "message": "MAPIF API is running.",
         "status":  "healthy"
     }
