@@ -11,6 +11,7 @@ const API_BASE = process.env.REACT_APP_API_URL
 const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
+  timeout: 300000, // ✅ 5 minutes — agents need time to run
 });
 
 // Attach JWT token to every request automatically

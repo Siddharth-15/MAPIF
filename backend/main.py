@@ -13,7 +13,6 @@ from routes import auth, projects, agents
 
 app = FastAPI(title="MAPIF API")
 
-# ✅ Explicitly list all allowed origins
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://mapif.vercel.app",
@@ -21,7 +20,6 @@ ALLOWED_ORIGINS = [
     "https://mapif-ktx0ensgp-vsg4.vercel.app",
 ]
 
-# Also add from environment variable for flexibility
 frontend_url = os.getenv("FRONTEND_URL", "")
 if frontend_url and frontend_url not in ALLOWED_ORIGINS:
     ALLOWED_ORIGINS.append(frontend_url)
@@ -44,3 +42,7 @@ def root():
         "message": "MAPIF API is running.",
         "status":  "healthy"
     }
+
+@app.get("/ping")
+def ping():
+    return {"ping": "pong"}

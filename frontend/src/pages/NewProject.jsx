@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProject, runPipeline } from '../api';
-
+import api from '../api';
 const agents = [
   { id: 1, name: "The Inquirer",  emoji: "🔍", desc: "Validating project details..."     },
   { id: 2, name: "The Analyst",   emoji: "📊", desc: "Researching market data..."        },
